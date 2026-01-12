@@ -81,6 +81,32 @@ El código está organizado de forma limpia para separar la lógica de la interf
 
 ---
 
+## 📦 Creación de Ejecutables
+
+Si deseas distribuir esta aplicación como un ejecutable independiente para que los usuarios no necesiten instalar Python, puedes usar el comando `build` de Flet.
+
+Desde la carpeta raíz del proyecto, ejecuta el comando correspondiente a tu sistema operativo de destino:
+
+-   **Para Windows:**
+    ```bash
+    flet build windows
+    ```
+-   **Para macOS:**
+    ```bash
+    flet build macos
+    ```
+-   **Para Linux:**
+    ```bash
+    flet build linux
+    ```
+
+El ejecutable resultante se encontrará en la carpeta `build/`.
+
+> **⚠️ Nota Importante sobre las Dependencias Externas:**
+> La compilación de la aplicación **NO** incluye las herramientas `piper` y `ffmpeg`. Esto significa que **el usuario final todavía necesita instalar `piper` y `ffmpeg` por separado** en su sistema y asegurarse de que estén accesibles en el PATH para que la aplicación funcione correctamente.
+
+---
+
 ## 📄 Licencia
 
 Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.
