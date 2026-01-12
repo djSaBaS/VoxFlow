@@ -5,6 +5,31 @@ Todas las modificaciones notables de este proyecto serán documentadas en este a
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto se adhiere al [Versionamiento Semántico](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2024-07-29
+
+### Añadido (`Added`)
+
+-   **Visualizador de Ondas:** Se ha añadido un gráfico que muestra la forma de onda del audio generado en tiempo real.
+-   **Reproducción Directa:** Ahora se puede reproducir y detener el audio directamente en la aplicación sin necesidad de guardarlo.
+-   **Selección de Voz:** Se ha implementado un menú desplegable para elegir entre múltiples voces (locutores) disponibles en el modelo de IA.
+-   **Gestión de Configuraciones de Voz:**
+    -   Funcionalidad para **Guardar** y **Cargar** configuraciones de voz personalizadas.
+    -   Capacidad para **Importar** y **Exportar** configuraciones en formato `.json`.
+    -   Botones de **Deshacer** y **Rehacer** para la selección de voz.
+-   **Barras de Progreso:** Indicadores visuales para la carga del modelo y la síntesis de voz, mejorando la experiencia de usuario.
+-   **Diálogo de Guardado Personalizado:** El usuario ahora puede elegir el nombre y la ubicación del archivo `.wav` de salida.
+
+### Cambiado (`Changed`)
+
+-   **Cambio de Motor de TTS (Crítico):** Se ha reemplazado el motor `Piper` por **`Coqui TTS`**. La aplicación ahora utiliza una biblioteca de Python pura, eliminando la necesidad de que los usuarios instalen dependencias externas.
+-   **Refactorización Completa:** El código de `main.py` y `voxflow_core.py` ha sido reescrito para soportar la nueva arquitectura basada en Coqui TTS, mejorando la modularidad y la mantenibilidad.
+-   **Formato de Salida:** La aplicación ahora genera archivos en formato `.wav` en lugar de `.mp3` para simplificar el proceso y eliminar la dependencia de FFmpeg.
+-   **Interfaz de Usuario Renovada:** La interfaz ha sido rediseñada para acomodar todas las nuevas funcionalidades de forma intuitiva.
+
+### Eliminado (`Removed`)
+
+-   **Dependencias Externas:** Se ha eliminado por completo la dependencia de los ejecutables externos `piper` y `ffmpeg`. La aplicación ahora es mucho más fácil de instalar y distribuir.
+
 ## [1.0.0] - 2024-01-12
 
 ### Añadido (`Added`)
