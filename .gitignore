@@ -1,0 +1,15 @@
+# Ignorar artefactos de compilación de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignorar archivos de modelos de voz
+*.onnx
+
+# Ignorar archivos de salida de prueba
+test_output.mp3
+
+# Ignorar archivos específicos del editor o IDE
+.vscode/
+.idea/

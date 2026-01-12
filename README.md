@@ -1,99 +1,116 @@
-# 🎙️ VoxFlow: Natural Multiplatform TTS
+# 🎙️ VoxFlow v1.0: Natural Multiplatform TTS
 
-**VoxFlow** es una solución de síntesis de voz (Text-to-Speech) basada en modelos neuronales de última generación. El objetivo principal es proporcionar voces humanas extremadamente naturales que funcionen de forma local y privada en cualquier sistema operativo.
-
----
-
-## 🚀 Características Principales
-
-- **Naturalidad Superior:** Utiliza modelos VITS para una entonación humana.
-- **Multiplataforma:** Soporte nativo para Windows, Android, Linux y macOS.
-- **Privacidad Total:** Funciona 100% offline. No se envían datos a la nube.
-- **Alto Rendimiento:** Optimizado incluso para hardware modesto como Raspberry Pi o dispositivos Android antiguos.
+**VoxFlow** es una solución de síntesis de voz (Text-to-Speech) que proporciona voces naturales y fluidas en múltiples plataformas. Basada en el motor de inferencia de Piper, esta aplicación te permite convertir texto a voz de alta calidad de forma local y privada.
 
 ---
 
-## 🛠️ Instalación
+## ✨ Características Principales
 
-Para configurar el entorno de desarrollo, sigue estos pasos:
-
-### Requisitos previos
-- Python 3.10 o superior.
-- Pip (gestor de paquetes de Python).
-
-### Pasos
-1. **Clonar el repositorio:**
-   ```bash
-   git clone [https://github.com/tu-usuario/VoxFlow.git](https://github.com/tu-usuario/VoxFlow.git)
-   cd VoxFlow
-Instalar dependencias:
-
-Bash
-
-pip install -r requirements.txt
-Descargar un modelo de voz: Descarga un archivo .onnx desde el catálogo de Piper Voices y colócalo en la carpeta raíz del proyecto.
-
-💻 Ejemplo de Uso
-El núcleo del proyecto está diseñado para ser simple y profesional:
-
-Python
-
-# Importamos la lógica principal del sintetizador
-from voxflow_core import Synthesizer
-
-# Inicializamos el motor con el modelo descargado
-# El modelo debe ser un archivo .onnx perfectamente configurado
-engine = Synthesizer(model_path="es_ES-sharvard-medium.onnx")
-
-# Convertimos texto a voz de manera inmediata
-# La función 'play' gestiona la salida de audio según el OS
-engine.say("Hola, bienvenido al futuro de la síntesis de voz natural.")
-📱 Compilación para Móvil y Escritorio
-Este proyecto utiliza Flet para la interfaz gráfica, lo que permite empaquetar la app fácilmente:
-
-Para Android: flet build apk
-
-Para Windows: flet build windows
-
-Para macOS: flet build macos
-
-📄 Licencia
-Este proyecto está bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles.
-
-🤝 Contribuciones
-¡Las contribuciones son bienvenidas! Si tienes ideas para mejorar la naturalidad o añadir nuevos idiomas, abre un Pull Request o una Issue.
-
+- **Naturalidad Superior:** Utiliza los modelos de voz de última generación de Piper para una entonación y claridad casi humanas.
+- **Multiplataforma (Escritorio):** Diseñado para funcionar en **Windows, macOS y Linux**. El soporte para **Android** es un objetivo a futuro.
+- **Interfaz Gráfica Sencilla:** Una aplicación de escritorio intuitiva construida con Flet.
+- **Funcionalidades Clave:**
+  - Pega texto directamente o **carga archivos `.txt`**.
+  - **Reproduce el audio** al instante.
+  - **Guarda la salida como un archivo `.mp3`** para usarla donde quieras.
+- **Privacidad Total:** Todo el procesamiento se realiza en tu dispositivo. No se envían datos a la nube.
+- **Alto Rendimiento:** Optimizado para funcionar de manera eficiente incluso en hardware modesto.
 
 ---
 
-### 4. Resumen del código de lógica (`voxflow_core.py`)
-Para que tu proyecto esté completo, aquí tienes la clase base comentada línea a línea:
+## 🛠️ Instalación y Configuración
 
-```python
-import subprocess # Módulo para ejecutar procesos del sistema operativo
-import platform   # Para detectar si estamos en Windows, Linux o Mac
+Para poner en marcha la aplicación, sigue estos pasos:
 
-class Synthesizer:
-    # Método constructor para inicializar la ruta del modelo de voz
-    def __init__(self, model_path):
-        self.model_path = model_path # Guardamos la ruta del archivo .onnx
+### 1. Requisitos Previos (¡Importante!)
 
-    # Método para procesar texto y convertirlo en audio audible
-    def say(self, text):
-        # Detectamos el sistema operativo actual del usuario
-        os_type = platform.system()
+Antes de ejecutar la aplicación, necesitas instalar dos herramientas externas:
 
-        # Construimos el comando base de Piper con el modelo especificado
-        # Piper recibe texto por entrada estándar (stdin) y devuelve audio raw
-        base_cmd = f'echo "{text}" | piper --model {self.model_path} --output_raw'
+- **Piper:** Es el motor de síntesis de voz. Descárgalo desde su [página oficial de GitHub](https://github.com/rhasspy/piper/releases). Debes descargar el binario correspondiente a tu sistema operativo y añadirlo al **PATH** del sistema para que la aplicación pueda encontrarlo.
+- **FFmpeg:** Es una herramienta esencial para la manipulación de audio y video. La usamos para convertir el audio generado a formato MP3.
+  - **Windows:** Descárgalo desde [su sitio web oficial](https://ffmpeg.org/download.html) y añade la carpeta `bin` a tu PATH.
+  - **macOS (con Homebrew):** `brew install ffmpeg`
+  - **Linux (Debian/Ubuntu):** `sudo apt-get install ffmpeg`
 
-        # Ajustamos el comando de reproducción según el sistema operativo detectado
-        if os_type == "Linux" or os_type == "Darwin": # Darwin es el núcleo de macOS
-            # En sistemas Unix usamos 'aplay' o 'afplay' para reproducir el audio raw
-            full_cmd = f"{base_cmd} | aplay -r 22050 -f S16_LE -t raw"
-        elif os_type == "Windows":
-            # En Windows se suele redirigir a un reproductor compatible como ffplay
-            full_cmd = f"{base_cmd} | ffplay -ar 22050 -f s16le -nodisp -autoexit -"
-        
-        # Ejecutamos el comando final en una shell del sistema de forma segura
-        subprocess.Popen(full_cmd, shell=True)
+### 2. Configuración del Proyecto
+
+1.  **Clonar el repositorio:**
+    ```bash
+    git clone https://github.com/tu-usuario/VoxFlow.git
+    cd VoxFlow
+    ```
+
+2.  **Instalar las dependencias de Python:**
+    Se recomienda crear un entorno virtual para mantener las dependencias aisladas.
+    ```bash
+    python3 -m venv .venv
+    source .venv/bin/activate  # En Windows: .venv\Scripts\activate
+    ```
+    Luego, instala los paquetes necesarios:
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+3.  **Descargar un Modelo de Voz:**
+    La aplicación necesita un modelo de voz en formato `.onnx`. Descarga el modelo en español `es_ES-sharvard-medium.onnx` desde [aquí](https://huggingface.co/rhasspy/piper-voices/resolve/main/es/es_ES/sharvard/medium/es_ES-sharvard-medium.onnx) y colócalo en la carpeta raíz del proyecto.
+
+---
+
+## 💻 ¿Cómo Usar la Aplicación?
+
+Una vez que hayas completado la instalación, ejecuta la aplicación con:
+```bash
+python3 main.py
+```
+Se abrirá una ventana donde podrás:
+1.  **Escribir o pegar texto** en el área designada.
+2.  Hacer clic en **"Subir Archivo .txt"** para cargar texto desde un archivo.
+3.  Pulsar **"Convertir a Voz"** para escuchar el resultado.
+4.  Pulsar **"Guardar como MP3"** para guardar el audio en tu disco.
+
+---
+
+## 📂 Estructura del Proyecto
+
+El código está organizado de forma limpia para separar la lógica de la interfaz:
+
+-   `main.py`: Contiene todo el código de la interfaz de usuario creada con Flet. Gestiona los botones, campos de texto y eventos.
+-   `voxflow_core.py`: El cerebro del proyecto. La clase `Synthesizer` se encarga de interactuar con Piper y FFmpeg para generar y guardar el audio, con lógica adaptada para cada sistema operativo.
+-   `requirements.txt`: Lista las dependencias de Python.
+-   `CHANGELOG.md`: Historial de cambios y versiones del proyecto.
+
+---
+
+## 📦 Creación de Ejecutables
+
+Si deseas distribuir esta aplicación como un ejecutable independiente para que los usuarios no necesiten instalar Python, puedes usar el comando `build` de Flet.
+
+Desde la carpeta raíz del proyecto, ejecuta el comando correspondiente a tu sistema operativo de destino:
+
+-   **Para Windows:**
+    ```bash
+    flet build windows
+    ```
+-   **Para macOS:**
+    ```bash
+    flet build macos
+    ```
+-   **Para Linux:**
+    ```bash
+    flet build linux
+    ```
+
+El ejecutable resultante se encontrará en la carpeta `build/`.
+
+> **⚠️ Nota Importante sobre las Dependencias Externas:**
+> La compilación de la aplicación **NO** incluye las herramientas `piper` y `ffmpeg`. Esto significa que **el usuario final todavía necesita instalar `piper` y `ffmpeg` por separado** en su sistema y asegurarse de que estén accesibles en el PATH para que la aplicación funcione correctamente.
+
+---
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.
+
+## 🤝 Contribuciones
+
+¡Las contribuciones son bienvenidas! Si tienes ideas para mejorar la aplicación, optimizar el rendimiento o añadir nuevas funcionalidades, no dudes en abrir un Pull Request o una Issue.
