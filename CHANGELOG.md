@@ -5,6 +5,17 @@ Todas las modificaciones notables de este proyecto serán documentadas en este a
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto se adhiere al [Versionamiento Semántico](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 2024-07-29
+
+### Corregido (`Fixed`)
+
+-   **Error de `TypeError` en `Dropdown`:** Se ha corregido un error de compatibilidad con la versión de Flet que impedía iniciar la aplicación, moviendo la asignación del evento `on_change` para que ocurra después de la inicialización del control.
+-   **Advertencia `DeprecationWarning`:** Se ha actualizado la llamada de inicio de la aplicación de `ft.app()` a `ft.run()`, siguiendo las recomendaciones de las versiones más recientes de Flet.
+
+### Añadido (`Added`)
+
+-   **Sistema de Registro de Logs:** Se ha implementado un sistema de registro (`logging`) que guarda los eventos importantes y los errores en un archivo `voxflow.log`. Esto mejora enormemente la capacidad de diagnosticar problemas futuros.
+
 ## [2.0.0] - 2024-07-29
 
 ### Añadido (`Added`)

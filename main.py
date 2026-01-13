@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt  # Para crear el gráfico de la onda de sonido.
 import time  # Para pequeñas pausas y control de la UI.
 import json # Para guardar y cargar las configuraciones de voz.
 import os # Para crear el directorio de assets.
+import logging # Para registrar eventos y errores.
 
 # Importamos nuestra clase Synthesizer del otro archivo.
 from voxflow_core import Synthesizer
@@ -94,7 +95,6 @@ def main(page: ft.Page):
     speaker_dropdown = ft.Dropdown(
         label="Selecciona una Voz",
         options=[], # Se llenará dinámicamente.
-        on_change=None, # Se asignará después.
         disabled=True
     )
 
@@ -124,7 +124,7 @@ def main(page: ft.Page):
     save_button = ft.ElevatedButton(text="Guardar como .wav", icon=ft.icons.SAVE, on_click=None, disabled=True)
 
     # Controles para la gestión de configuraciones de voz.
-    saved_voices_dropdown = ft.Dropdown(label="Configuraciones Guardadas", on_change=None, options=[])
+    saved_voices_dropdown = ft.Dropdown(label="Configuraciones Guardadas", options=[])
     save_config_button = ft.IconButton(icon=ft.icons.BOOKMARK_ADD, tooltip="Guardar configuración de voz actual", on_click=None)
     import_configs_button = ft.IconButton(icon=ft.icons.FILE_UPLOAD, tooltip="Importar configuraciones", on_click=None)
     export_configs_button = ft.IconButton(icon=ft.icons.FILE_DOWNLOAD, tooltip="Exportar configuraciones", on_click=None)
@@ -278,49 +278,62 @@ def main(page: ft.Page):
 
     # Función que se ejecuta en un hilo para la síntesis de voz.
     def synthesize_thread(e):
-        # Deshabilitamos los controles para evitar acciones conflictivas.
-        text_input.disabled = True
-        speaker_dropdown.disabled = True
-        synthesize_button.disabled = True
-        synthesis_progress.visible = True
-        play_button.disabled = True
-        stop_button.disabled = True
-        save_button.disabled = True
-        page.update()
+        try:
+            # Deshabilitamos los controles para evitar acciones conflictivas.
+            text_input.disabled = True
+            speaker_dropdown.disabled = True
+            synthesize_button.disabled = True
+            synthesis_progress.visible = True
+            play_button.disabled = True
+            stop_button.disabled = True
+            save_button.disabled = True
+            page.update()
 
-        # Obtenemos el texto y el locutor seleccionado.
-        text = text_input.value
-        speaker = speaker_dropdown.value
+            # Obtenemos el texto y el locutor seleccionado.
+            text = text_input.value
+            speaker = speaker_dropdown.value
 
-        # Si no hay texto, mostramos un error y volvemos al estado normal.
-        if not text.strip():
-            page.snack_bar = ft.SnackBar(ft.Text("El campo de texto no puede estar vacío."), bgcolor=ft.colors.ERROR)
+            # Si no hay texto, mostramos un error y volvemos al estado normal.
+            if not text.strip():
+                page.snack_bar = ft.SnackBar(ft.Text("El campo de texto no puede estar vacío."), bgcolor=ft.colors.ERROR)
+                page.snack_bar.open = True
+                text_input.disabled = False
+                speaker_dropdown.disabled = False
+                synthesize_button.disabled = False
+                synthesis_progress.visible = False
+                page.update()
+                return
+
+            # Realizamos la síntesis.
+            audio_data, sample_rate = synthesizer.synthesize(text, speaker)
+
+            # Guardamos el resultado en nuestra caché.
+            audio_cache["data"] = audio_data
+            audio_cache["rate"] = sample_rate
+
+            # Actualizamos la visualización de la onda.
+            update_waveform_plot(audio_data, sample_rate)
+
+            # Habilitamos los controles correspondientes.
+            text_input.disabled = False
+            speaker_dropdown.disabled = False
+            synthesize_button.disabled = False
+            synthesis_progress.visible = False
+            play_button.disabled = False
+            save_button.disabled = False
+            page.update()
+        except Exception as ex:
+            # Si ocurre cualquier error inesperado durante la síntesis, lo registramos.
+            logging.error("Error inesperado en el hilo de síntesis.", exc_info=True)
+            # Mostramos un mensaje de error al usuario.
+            page.snack_bar = ft.SnackBar(ft.Text(f"Error crítico: {ex}"), bgcolor=ft.colors.ERROR)
             page.snack_bar.open = True
+            # Intentamos restaurar la UI a un estado usable.
             text_input.disabled = False
             speaker_dropdown.disabled = False
             synthesize_button.disabled = False
             synthesis_progress.visible = False
             page.update()
-            return
-
-        # Realizamos la síntesis.
-        audio_data, sample_rate = synthesizer.synthesize(text, speaker)
-
-        # Guardamos el resultado en nuestra caché.
-        audio_cache["data"] = audio_data
-        audio_cache["rate"] = sample_rate
-
-        # Actualizamos la visualización de la onda.
-        update_waveform_plot(audio_data, sample_rate)
-
-        # Habilitamos los controles correspondientes.
-        text_input.disabled = False
-        speaker_dropdown.disabled = False
-        synthesize_button.disabled = False
-        synthesis_progress.visible = False
-        play_button.disabled = False
-        save_button.disabled = False
-        page.update()
 
     # Manejador del botón de generar.
     def start_synthesis(e):
@@ -336,10 +349,10 @@ def main(page: ft.Page):
             # Aseguramos que la extensión sea .wav.
             if not target_path.lower().endswith(".wav"):
                 target_path += ".wav"
-            
+
             # Guardamos el archivo usando el método de nuestro sintetizador.
             success = synthesizer.save_to_wav(audio_cache["data"], audio_cache["rate"], target_path)
-            
+
             # Mostramos un mensaje de confirmación o de error.
             if success:
                 page.snack_bar = ft.SnackBar(ft.Text(f"Archivo guardado en: {target_path}"), bgcolor=ft.colors.GREEN_700)
@@ -395,33 +408,44 @@ def main(page: ft.Page):
     # Función que se ejecuta en un hilo para inicializar el sintetizador.
     def initialize_synthesizer():
         nonlocal synthesizer
-        # Creamos la instancia de la clase Synthesizer.
-        synthesizer = Synthesizer()
+        try:
+            # Registramos el inicio de la carga del modelo.
+            logging.info("Iniciando la carga del sintetizador...")
+            # Creamos la instancia de la clase Synthesizer.
+            synthesizer = Synthesizer()
 
-        # Una vez cargado, obtenemos los locutores y los añadimos al menú desplegable.
-        speakers = synthesizer.get_speakers()
-        speaker_options = [ft.dropdown.Option(s) for s in speakers]
-        speaker_dropdown.options = speaker_options
-        # Seleccionamos el primer locutor por defecto.
-        if speakers:
-            initial_speaker = speakers[0]
-            speaker_dropdown.value = initial_speaker
-            # Guardamos el estado inicial para el sistema de Deshacer.
-            voice_state_manager.add_state(initial_speaker)
-            undo_button.disabled = False # Se puede deshacer al menos una vez al estado inicial.
+            # Una vez cargado, obtenemos los locutores y los añadimos al menú desplegable.
+            speakers = synthesizer.get_speakers()
+            speaker_options = [ft.dropdown.Option(s) for s in speakers]
+            speaker_dropdown.options = speaker_options
+            # Seleccionamos el primer locutor por defecto.
+            if speakers:
+                initial_speaker = speakers[0]
+                speaker_dropdown.value = initial_speaker
+                # Guardamos el estado inicial para el sistema de Deshacer.
+                voice_state_manager.add_state(initial_speaker)
+                undo_button.disabled = False # Se puede deshacer al menos una vez al estado inicial.
 
-        # Ocultamos el indicador de carga.
-        loading_indicator.visible = False
-        loading_label.visible = False
+            # Ocultamos el indicador de carga.
+            loading_indicator.visible = False
+            loading_label.visible = False
 
-        # Habilitamos los controles principales de la UI.
-        text_input.disabled = False
-        speaker_dropdown.disabled = False
-        synthesize_button.disabled = False
-        page.update()
+            # Habilitamos los controles principales de la UI.
+            text_input.disabled = False
+            speaker_dropdown.disabled = False
+            synthesize_button.disabled = False
+            logging.info("Sintetizador cargado y UI habilitada.")
+            page.update()
+        except Exception as ex:
+            # Si la inicialización falla, lo registramos y mostramos un error fatal.
+            logging.error("Error crítico al inicializar el sintetizador.", exc_info=True)
+            loading_label.value = f"Error al cargar el modelo: {ex}"
+            loading_indicator.visible = False
+            page.update()
 
-    # Asignamos los manejadores de eventos a los botones.
+    # Asignamos los manejadores de eventos a los botones después de su creación.
     speaker_dropdown.on_change = on_speaker_change
+    saved_voices_dropdown.on_change = load_voice_config
     undo_button.on_click = undo_voice_change
     redo_button.on_click = redo_voice_change
     synthesize_button.on_click = start_synthesis
@@ -478,4 +502,14 @@ def main(page: ft.Page):
 
 # Punto de entrada para ejecutar la aplicación.
 if __name__ == "__main__":
-    ft.app(target=main)
+    # Configuramos el logging para la aplicación principal.
+    logging.basicConfig(filename='voxflow.log', level=logging.INFO,
+                        format='%(asctime)s - %(levelname)s - %(message)s')
+    logging.info("Iniciando la aplicación VoxFlow.")
+
+    try:
+        # Usamos ft.run() que es la forma moderna y recomendada de ejecutar una app Flet.
+        ft.run(main)
+    except Exception as e:
+        # Capturamos cualquier error fatal durante el inicio de la app y lo registramos.
+        logging.critical("La aplicación ha fallado al iniciar.", exc_info=True)

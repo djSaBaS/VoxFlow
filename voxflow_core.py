@@ -2,6 +2,7 @@
 # Importamos las bibliotecas necesarias.
 import torch  # Biblioteca principal de PyTorch, necesaria para Coqui TTS.
 from TTS.api import TTS  # La clase principal de la API de Coqui TTS.
+import logging # Para registrar eventos y errores.
 import numpy as np  # NumPy, para manejar los arrays de audio.
 from scipy.io.wavfile import write as write_wav  # Para guardar los datos de audio en un archivo .wav.
 import os # Lo usaremos para la gestión de archivos
@@ -17,11 +18,15 @@ class Synthesizer:
         # Inicializa el sintetizador, cargando el modelo de Coqui TTS.
         # Detecta si hay una GPU disponible (CUDA) para un procesamiento más rápido.
         """
+        # Configuramos el sistema de registro.
+        logging.basicConfig(filename='voxflow.log', level=logging.INFO,
+                            format='%(asctime)s - %(levelname)s - %(message)s')
+
         # Determinamos el dispositivo a utilizar: 'cuda' si hay una GPU disponible, de lo contrario 'cpu'.
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
-        # Mensaje informativo para el usuario sobre el dispositivo que se está utilizando.
-        print(f"Usando dispositivo: {self.device}")
+        # Registramos el dispositivo que se está utilizando.
+        logging.info(f"Usando dispositivo: {self.device}")
 
         # Ruta al modelo TTS que vamos a utilizar. XTTS v2 es un modelo multilingüe y multi-locutor de alta calidad.
         model_name = "tts_models/multilingual/multi-dataset/xtts_v2"
@@ -59,8 +64,16 @@ class Synthesizer:
         """
         # Usamos el método 'tts' del objeto para generar el audio.
         # 'speaker' especifica la voz a usar y 'language' el idioma del texto.
+        # Registramos el inicio de la síntesis.
+        logging.info(f"Iniciando síntesis para el locutor '{speaker_name}'.")
+
+        # Usamos el método 'tts' del objeto para generar el audio.
+        # 'speaker' especifica la voz a usar y 'language' el idioma del texto.
         # La salida es una lista de floats que representa la onda de sonido.
         wav_output = self.tts.tts(text=text, speaker=speaker_name, language="es")
+
+        # Registramos que la síntesis ha finalizado.
+        logging.info("Síntesis completada con éxito.")
 
         # Convertimos la lista de salida a un array de NumPy con el tipo de dato float32.
         audio_data = np.array(wav_output, dtype=np.float32)
@@ -85,10 +98,12 @@ class Synthesizer:
             # Usamos la función 'write_wav' de SciPy para escribir los datos en el archivo.
             # Es importante que el sample_rate sea correcto para que el audio no suene acelerado o ralentizado.
             write_wav(output_path, sample_rate, audio_data)
+            # Registramos que el archivo se ha guardado.
+            logging.info(f"Archivo de audio guardado en: {output_path}")
             # Retornamos True si el archivo se guardó con éxito.
             return True
         except Exception as e:
-            # Si ocurre algún error durante el guardado, lo imprimimos en la consola.
-            print(f"Error al guardar el archivo WAV: {e}")
+            # Si ocurre algún error durante el guardado, lo registramos en el log.
+            logging.error(f"Error al guardar el archivo WAV en '{output_path}': {e}", exc_info=True)
             # Retornamos False para indicar que hubo un problema.
             return False

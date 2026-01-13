@@ -1,15 +1,16 @@
-# Ignorar artefactos de compilación de Python
+# Archivos de Log
+*.log
+
+# Directorios de caché de Python
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
 
-# Ignorar archivos de modelos de voz
-*.onnx
+# Entorno virtual de Python
+.venv/
 
-# Ignorar archivos de salida de prueba
-test_output.mp3
+# Directorio de assets generados
+assets/
 
-# Ignorar archivos específicos del editor o IDE
-.vscode/
-.idea/
+# Archivos y directorios de compilación de Flet
+/build/
+/dist/
+*.spec
