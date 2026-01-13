@@ -113,7 +113,7 @@ def main(page: ft.Page):
     synthesis_progress = ft.ProgressBar(value=0, width=page.width, visible=False)
 
     # Creamos un control de imagen que mostrará el gráfico de la onda.
-    waveform_plot = ft.Image(visible=False, width=600, height=300, fit=ft.ImageFit.CONTAIN)
+    waveform_plot = ft.Image(visible=False, width=600, height=300, fit="contain")
 
     # Botones para la reproducción de audio.
     play_button = ft.IconButton(icon="PLAY_ARROW", on_click=None, tooltip="Reproducir", disabled=True)
