@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt  # Para crear el gráfico de la onda de sonido.
 import time  # Para pequeñas pausas y control de la UI.
 import json # Para guardar y cargar las configuraciones de voz.
 import os # Para crear el directorio de assets.
-import logging # Para registrar eventos y errores.
 
 # Importamos nuestra clase Synthesizer del otro archivo.
 from voxflow_core import Synthesizer
@@ -99,13 +98,13 @@ def main(page: ft.Page):
     )
 
     # Botones de Deshacer y Rehacer para los ajustes de voz.
-    undo_button = ft.IconButton(icon=ft.icons.UNDO, tooltip="Deshacer cambio de voz", on_click=None, disabled=True)
-    redo_button = ft.IconButton(icon=ft.icons.REDO, tooltip="Rehacer cambio de voz", on_click=None, disabled=True)
+    undo_button = ft.IconButton(icon="UNDO", tooltip="Deshacer cambio de voz", on_click=None, disabled=True)
+    redo_button = ft.IconButton(icon="REDO", tooltip="Rehacer cambio de voz", on_click=None, disabled=True)
 
     # Botón para iniciar la síntesis de texto a voz.
     synthesize_button = ft.ElevatedButton(
         text="Generar Audio",
-        icon=ft.icons.SPEAKER_PHONE,
+        icon="SPEAKER_PHONE",
         on_click=None, # La función se asignará después.
         disabled=True
     )
@@ -117,17 +116,17 @@ def main(page: ft.Page):
     waveform_plot = ft.Image(visible=False, width=600, height=300, fit=ft.ImageFit.CONTAIN)
 
     # Botones para la reproducción de audio.
-    play_button = ft.IconButton(icon=ft.icons.PLAY_ARROW, on_click=None, tooltip="Reproducir", disabled=True)
-    stop_button = ft.IconButton(icon=ft.icons.STOP, on_click=None, tooltip="Detener", disabled=True)
+    play_button = ft.IconButton(icon="PLAY_ARROW", on_click=None, tooltip="Reproducir", disabled=True)
+    stop_button = ft.IconButton(icon="STOP", on_click=None, tooltip="Detener", disabled=True)
 
     # Botón para guardar el archivo de audio.
-    save_button = ft.ElevatedButton(text="Guardar como .wav", icon=ft.icons.SAVE, on_click=None, disabled=True)
+    save_button = ft.ElevatedButton(text="Guardar como .wav", icon="SAVE", on_click=None, disabled=True)
 
     # Controles para la gestión de configuraciones de voz.
     saved_voices_dropdown = ft.Dropdown(label="Configuraciones Guardadas", options=[])
-    save_config_button = ft.IconButton(icon=ft.icons.BOOKMARK_ADD, tooltip="Guardar configuración de voz actual", on_click=None)
-    import_configs_button = ft.IconButton(icon=ft.icons.FILE_UPLOAD, tooltip="Importar configuraciones", on_click=None)
-    export_configs_button = ft.IconButton(icon=ft.icons.FILE_DOWNLOAD, tooltip="Exportar configuraciones", on_click=None)
+    save_config_button = ft.IconButton(icon="BOOKMARK_ADD", tooltip="Guardar configuración de voz actual", on_click=None)
+    import_configs_button = ft.IconButton(icon="FILE_UPLOAD", tooltip="Importar configuraciones", on_click=None)
+    export_configs_button = ft.IconButton(icon="FILE_DOWNLOAD", tooltip="Exportar configuraciones", on_click=None)
 
     # --- 4. LÓGICA DE LA APLICACIÓN Y MANEJADORES DE EVENTOS ---
 
@@ -323,8 +322,8 @@ def main(page: ft.Page):
             save_button.disabled = False
             page.update()
         except Exception as ex:
-            # Si ocurre cualquier error inesperado durante la síntesis, lo registramos.
-            logging.error("Error inesperado en el hilo de síntesis.", exc_info=True)
+            # Si ocurre cualquier error inesperado durante la síntesis, lo imprimimos en la consola.
+            print(f"Error inesperado en el hilo de síntesis: {ex}")
             # Mostramos un mensaje de error al usuario.
             page.snack_bar = ft.SnackBar(ft.Text(f"Error crítico: {ex}"), bgcolor=ft.colors.ERROR)
             page.snack_bar.open = True
@@ -409,8 +408,8 @@ def main(page: ft.Page):
     def initialize_synthesizer():
         nonlocal synthesizer
         try:
-            # Registramos el inicio de la carga del modelo.
-            logging.info("Iniciando la carga del sintetizador...")
+            # Imprimimos un mensaje para indicar que la carga ha comenzado.
+            print("Iniciando la carga del sintetizador...")
             # Creamos la instancia de la clase Synthesizer.
             synthesizer = Synthesizer()
 
@@ -434,11 +433,11 @@ def main(page: ft.Page):
             text_input.disabled = False
             speaker_dropdown.disabled = False
             synthesize_button.disabled = False
-            logging.info("Sintetizador cargado y UI habilitada.")
+            print("Sintetizador cargado y UI habilitada.")
             page.update()
         except Exception as ex:
-            # Si la inicialización falla, lo registramos y mostramos un error fatal.
-            logging.error("Error crítico al inicializar el sintetizador.", exc_info=True)
+            # Si la inicialización falla, lo imprimimos y mostramos un error fatal.
+            print(f"Error crítico al inicializar el sintetizador: {ex}")
             loading_label.value = f"Error al cargar el modelo: {ex}"
             loading_indicator.visible = False
             page.update()
@@ -502,14 +501,5 @@ def main(page: ft.Page):
 
 # Punto de entrada para ejecutar la aplicación.
 if __name__ == "__main__":
-    # Configuramos el logging para la aplicación principal.
-    logging.basicConfig(filename='voxflow.log', level=logging.INFO,
-                        format='%(asctime)s - %(levelname)s - %(message)s')
-    logging.info("Iniciando la aplicación VoxFlow.")
-
-    try:
-        # Usamos ft.run() que es la forma moderna y recomendada de ejecutar una app Flet.
-        ft.run(main)
-    except Exception as e:
-        # Capturamos cualquier error fatal durante el inicio de la app y lo registramos.
-        logging.critical("La aplicación ha fallado al iniciar.", exc_info=True)
+    # Usamos ft.run() que es la forma moderna y recomendada de ejecutar una app Flet.
+    ft.run(main)

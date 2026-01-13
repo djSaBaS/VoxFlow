@@ -5,6 +5,12 @@ Todas las modificaciones notables de este proyecto serán documentadas en este a
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto se adhiere al [Versionamiento Semántico](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.2] - 2024-07-29
+
+### Corregido (`Fixed`)
+
+-   **Error de `AttributeError` en Iconos:** Se ha corregido un error que impedía iniciar la aplicación debido a la forma en que se referenciaban los iconos. Todas las llamadas a iconos (`ft.icons.NOMBRE`) han sido reemplazadas por su equivalente en formato de cadena de texto (`"NOMBRE"`) para garantizar la máxima compatibilidad entre diferentes versiones de Flet.
+
 ## [2.0.1] - 2024-07-29
 
 ### Corregido (`Fixed`)
