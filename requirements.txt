@@ -3,3 +3,4 @@ coqui-tts
 sounddevice
 scipy
 matplotlib
+pytest
