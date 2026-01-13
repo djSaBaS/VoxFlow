@@ -103,7 +103,7 @@ def main(page: ft.Page):
 
     # Botón para iniciar la síntesis de texto a voz.
     synthesize_button = ft.ElevatedButton(
-        text="Generar Audio",
+        content=ft.Text("Generar Audio"),
         icon="SPEAKER_PHONE",
         on_click=None, # La función se asignará después.
         disabled=True
@@ -120,7 +120,7 @@ def main(page: ft.Page):
     stop_button = ft.IconButton(icon="STOP", on_click=None, tooltip="Detener", disabled=True)
 
     # Botón para guardar el archivo de audio.
-    save_button = ft.ElevatedButton(text="Guardar como .wav", icon="SAVE", on_click=None, disabled=True)
+    save_button = ft.ElevatedButton(content=ft.Text("Guardar como .wav"), icon="SAVE", on_click=None, disabled=True)
 
     # Controles para la gestión de configuraciones de voz.
     saved_voices_dropdown = ft.Dropdown(label="Configuraciones Guardadas", options=[])

@@ -5,6 +5,12 @@ Todas las modificaciones notables de este proyecto serán documentadas en este a
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto se adhiere al [Versionamiento Semántico](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.3] - 2024-07-29
+
+### Corregido (`Fixed`)
+
+-   **Error de `TypeError` en `ElevatedButton`:** Se ha corregido un error de compatibilidad con la API de Flet, reemplazando el argumento obsoleto `text` por el argumento `content` con un control `ft.Text` en todos los botones de la aplicación.
+
 ## [2.0.2] - 2024-07-29
 
 ### Corregido (`Fixed`)
