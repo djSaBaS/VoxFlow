@@ -399,8 +399,10 @@ def main(page: ft.Page):
             page.snack_bar.open = True
             page.update()
 
-    import_picker = ft.FilePicker(on_result=on_import_result)
-    export_picker = ft.FilePicker(on_result=on_export_result)
+    import_picker = ft.FilePicker()
+    import_picker.on_result = on_import_result
+    export_picker = ft.FilePicker()
+    export_picker.on_result = on_export_result
     page.overlay.extend([import_picker, export_picker])
 
 
