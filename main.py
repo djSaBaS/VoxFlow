@@ -341,7 +341,7 @@ def main(page: ft.Page):
         threading.Thread(target=synthesize_thread, args=(e,)).start()
 
     # Función que se ejecuta cuando el diálogo de guardado se cierra.
-    def save_file_result(e: ft.FilePickerResult):
+    def save_file_result(e):
         # Obtenemos la ruta del archivo seleccionada por el usuario.
         target_path = e.path
         # Si el usuario no canceló, procedemos a guardar.
@@ -368,7 +368,7 @@ def main(page: ft.Page):
     page.overlay.append(file_picker)
 
     # --- Funciones para Importar/Exportar ---
-    def on_import_result(e: ft.FilePickerResult):
+    def on_import_result(e):
         if e.files:
             import_path = e.files[0].path
             try:
@@ -384,7 +384,7 @@ def main(page: ft.Page):
             page.snack_bar.open = True
             page.update()
 
-    def on_export_result(e: ft.FilePickerResult):
+    def on_export_result(e):
         if e.path:
             export_path = e.path
             if not export_path.lower().endswith(".json"):
