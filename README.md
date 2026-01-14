@@ -1,36 +1,35 @@
-# 🎙️ VoxFlow v1.0: Natural Multiplatform TTS
+# 🎙️ VoxFlow v2.0: Natural TTS con IA Integrada
 
-**VoxFlow** es una solución de síntesis de voz (Text-to-Speech) que proporciona voces naturales y fluidas en múltiples plataformas. Basada en el motor de inferencia de Piper, esta aplicación te permite convertir texto a voz de alta calidad de forma local y privada.
+**VoxFlow** es una aplicación de escritorio para la síntesis de voz (Text-to-Speech) de alta calidad, ahora impulsada por el motor de inteligencia artificial de **Coqui TTS**. Esta nueva versión elimina las dependencias externas, ofreciendo una experiencia de usuario más fluida, potente y totalmente autocontenida.
 
 ---
 
 ## ✨ Características Principales
 
-- **Naturalidad Superior:** Utiliza los modelos de voz de última generación de Piper para una entonación y claridad casi humanas.
-- **Multiplataforma (Escritorio):** Diseñado para funcionar en **Windows, macOS y Linux**. El soporte para **Android** es un objetivo a futuro.
-- **Interfaz Gráfica Sencilla:** Una aplicación de escritorio intuitiva construida con Flet.
-- **Funcionalidades Clave:**
-  - Pega texto directamente o **carga archivos `.txt`**.
-  - **Reproduce el audio** al instante.
-  - **Guarda la salida como un archivo `.mp3`** para usarla donde quieras.
-- **Privacidad Total:** Todo el procesamiento se realiza en tu dispositivo. No se envían datos a la nube.
-- **Alto Rendimiento:** Optimizado para funcionar de manera eficiente incluso en hardware modesto.
+- **Motor de IA Avanzado:** Utiliza los modelos de voz de última generación de Coqui TTS para una claridad y naturalidad excepcionales.
+- **Totalmente Autocontenida:** Ya **no requiere instalar `piper` ni `ffmpeg`**. Toda la funcionalidad está empaquetada dentro de la aplicación Python.
+- **Multiplataforma:** Diseñada para funcionar en **Windows, macOS y Linux**.
+- **Interfaz Gráfica Intuitiva:** Una UI moderna y fácil de usar construida con Flet.
+- **Funcionalidades Avanzadas:**
+  - **Selección de Voz Dinámica:** Elige entre una variedad de voces (locutores) disponibles en el modelo.
+  - **Visualizador de Onda:** Analiza la forma de onda del audio generado en tiempo real.
+  - **Reproducción Instantánea:** Escucha el audio con controles de **Play/Stop** sin necesidad de guardarlo primero.
+  - **Guardado Personalizado:** Guarda el resultado como un archivo **`.wav`** con el nombre que elijas.
+  - **Gestión de Configuraciones de Voz:**
+    - **Guarda y Carga** tus ajustes de voz preferidos.
+    - **Exporta e Importa** configuraciones en formato `.json` para compartirlas.
+    - **Deshacer y Rehacer** cambios en la selección de voz.
+- **Privacidad Total:** El procesamiento se realiza 100% en tu dispositivo.
 
 ---
 
 ## 🛠️ Instalación y Configuración
 
-Para poner en marcha la aplicación, sigue estos pasos:
+Poner en marcha la aplicación ahora es más fácil que nunca.
 
-### 1. Requisitos Previos (¡Importante!)
+### 1. Requisitos Previos
 
-Antes de ejecutar la aplicación, necesitas instalar dos herramientas externas:
-
-- **Piper:** Es el motor de síntesis de voz. Descárgalo desde su [página oficial de GitHub](https://github.com/rhasspy/piper/releases). Debes descargar el binario correspondiente a tu sistema operativo y añadirlo al **PATH** del sistema para que la aplicación pueda encontrarlo.
-- **FFmpeg:** Es una herramienta esencial para la manipulación de audio y video. La usamos para convertir el audio generado a formato MP3.
-  - **Windows:** Descárgalo desde [su sitio web oficial](https://ffmpeg.org/download.html) y añade la carpeta `bin` a tu PATH.
-  - **macOS (con Homebrew):** `brew install ffmpeg`
-  - **Linux (Debian/Ubuntu):** `sudo apt-get install ffmpeg`
+-   **Python 3.9+** instalado en tu sistema.
 
 ### 2. Configuración del Proyecto
 
@@ -41,76 +40,64 @@ Antes de ejecutar la aplicación, necesitas instalar dos herramientas externas:
     ```
 
 2.  **Instalar las dependencias de Python:**
-    Se recomienda crear un entorno virtual para mantener las dependencias aisladas.
+    Se recomienda encarecidamente crear un entorno virtual.
     ```bash
     python3 -m venv .venv
     source .venv/bin/activate  # En Windows: .venv\Scripts\activate
     ```
-    Luego, instala los paquetes necesarios:
+    Luego, instala todos los paquetes necesarios con un solo comando:
     ```bash
     pip install -r requirements.txt
     ```
-
-3.  **Descargar un Modelo de Voz:**
-    La aplicación necesita un modelo de voz en formato `.onnx`. Descarga el modelo en español `es_ES-sharvard-medium.onnx` desde [aquí](https://huggingface.co/rhasspy/piper-voices/resolve/main/es/es_ES/sharvard/medium/es_ES-sharvard-medium.onnx) y colócalo en la carpeta raíz del proyecto.
+    *Nota: La primera vez que instales `coqui-tts`, se descargarán varias dependencias, incluyendo PyTorch, lo cual puede tardar unos minutos.*
 
 ---
 
 ## 💻 ¿Cómo Usar la Aplicación?
 
-Una vez que hayas completado la instalación, ejecuta la aplicación con:
+Una vez completada la instalación, ejecuta la aplicación con:
 ```bash
 python3 main.py
 ```
-Se abrirá una ventana donde podrás:
-1.  **Escribir o pegar texto** en el área designada.
-2.  Hacer clic en **"Subir Archivo .txt"** para cargar texto desde un archivo.
-3.  Pulsar **"Convertir a Voz"** para escuchar el resultado.
-4.  Pulsar **"Guardar como MP3"** para guardar el audio en tu disco.
+La primera vez que ejecutes la aplicación, Coqui TTS descargará automáticamente el modelo de voz necesario. Este proceso puede tardar un poco y requiere conexión a internet. Las siguientes veces, la aplicación se iniciará mucho más rápido.
+
+En la ventana principal podrás:
+1.  **Esperar a que cargue el modelo** (verás un indicador).
+2.  **Escribir o pegar texto** en el área designada.
+3.  **Seleccionar una voz** en el menú desplegable.
+4.  Pulsar **"Generar Audio"**. La forma de onda aparecerá en el visor.
+5.  Usar los botones **Play/Stop** para escuchar el resultado.
+6.  Pulsar **"Guardar como .wav"** para guardar el audio.
+7.  Utilizar los botones de **gestión de configuraciones** para guardar, cargar, importar o exportar tus voces favoritas.
 
 ---
 
 ## 📂 Estructura del Proyecto
 
-El código está organizado de forma limpia para separar la lógica de la interfaz:
-
--   `main.py`: Contiene todo el código de la interfaz de usuario creada con Flet. Gestiona los botones, campos de texto y eventos.
--   `voxflow_core.py`: El cerebro del proyecto. La clase `Synthesizer` se encarga de interactuar con Piper y FFmpeg para generar y guardar el audio, con lógica adaptada para cada sistema operativo.
--   `requirements.txt`: Lista las dependencias de Python.
+-   `main.py`: Contiene todo el código de la interfaz de usuario con Flet. Gestiona los eventos, la disposición de los controles y la interacción con el usuario.
+-   `voxflow_core.py`: El cerebro del proyecto. La clase `Synthesizer` inicializa Coqui TTS, gestiona la carga de modelos, la síntesis de voz y el guardado de archivos.
+-   `requirements.txt`: Lista todas las dependencias de Python.
 -   `CHANGELOG.md`: Historial de cambios y versiones del proyecto.
 
 ---
 
 ## 📦 Creación de Ejecutables
 
-Si deseas distribuir esta aplicación como un ejecutable independiente para que los usuarios no necesiten instalar Python, puedes usar el comando `build` de Flet.
+Puedes distribuir esta aplicación como un ejecutable independiente usando el comando `build` de Flet.
 
-Desde la carpeta raíz del proyecto, ejecuta el comando correspondiente a tu sistema operativo de destino:
+-   **Para Windows:** `flet build windows`
+-   **Para macOS:** `flet build macos`
+-   **Para Linux:** `flet build linux`
 
--   **Para Windows:**
-    ```bash
-    flet build windows
-    ```
--   **Para macOS:**
-    ```bash
-    flet build macos
-    ```
--   **Para Linux:**
-    ```bash
-    flet build linux
-    ```
-
-El ejecutable resultante se encontrará en la carpeta `build/`.
-
-> **⚠️ Nota Importante sobre las Dependencias Externas:**
-> La compilación de la aplicación **NO** incluye las herramientas `piper` y `ffmpeg`. Esto significa que **el usuario final todavía necesita instalar `piper` y `ffmpeg` por separado** en su sistema y asegurarse de que estén accesibles en el PATH para que la aplicación funcione correctamente.
+> **⚠️ Nota Importante sobre los Modelos de IA:**
+> La compilación con Flet empaquetará todas las dependencias de Python. Sin embargo, **el modelo de Coqui TTS no se incluye en el ejecutable**. La primera vez que un usuario final ejecute la aplicación, esta necesitará una conexión a internet para descargar y cachear el modelo de voz. Después de esa primera ejecución, la aplicación podrá funcionar sin conexión.
 
 ---
 
 ## 📄 Licencia
 
-Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.
+Este proyecto está bajo la Licencia MIT.
 
 ## 🤝 Contribuciones
 
-¡Las contribuciones son bienvenidas! Si tienes ideas para mejorar la aplicación, optimizar el rendimiento o añadir nuevas funcionalidades, no dudes en abrir un Pull Request o una Issue.
+Las contribuciones son bienvenidas. Si tienes ideas para mejorar la aplicación, no dudes en abrir un Pull Request o una Issue.

@@ -1,66 +1,118 @@
-import flet as ft # Importamos el framework para la interfaz de usuario
-import subprocess # Para ejecutar el proceso de Piper en el sistema
-import os          # Para manejar rutas de archivos de forma segura
+# -*- coding: utf-8 -*-
+import customtkinter as ctk     # Librería para la interfaz moderna
+import threading                # Para no bloquear la ventana durante el proceso
+import sounddevice as sd        # Para reproducir el audio
+import os                       # Para manejo de rutas
 
-def main(page: ft.Page):
-    # Configuramos el título y el tema de la ventana de la aplicación
-    page.title = "Natural TTS Multiplataforma"
-    page.theme_mode = ft.ThemeMode.LIGHT
-    page.padding = 20
+# Importamos tu lógica del sintetizador
+from voxflow_core import Synthesizer
 
-    # Variable para almacenar la ruta del modelo de voz (archivo .onnx)
-    # Debes descargar un modelo de https://github.com/rhasspy/piper/releases
-    MODEL_PATH = "es_ES-sharvard-medium.onnx"
+# Configuración del tema visual
+ctk.set_appearance_mode("light") 
+ctk.set_default_color_theme("blue")
 
-    # Definimos el campo de entrada de texto donde el usuario escribirá
-    text_input = ft.TextField(
-        label="Escribe el texto aquí",
-        multiline=True,
-        min_lines=3,
-        placeholder="Hola, ¿cómo estás hoy?"
-    )
+class VoxFlowApp(ctk.CTk):
+    def __init__(self):
+        super().__init__()
 
-    # Función que se ejecuta al presionar el botón de "Convertir"
-    def speak_text(e):
-        # Verificamos si hay texto en el campo de entrada
-        if not text_input.value:
-            page.snack_bar = ft.SnackBar(ft.Text("Por favor, ingresa un texto"))
-            page.snack_bar.open = True
-            page.update()
+        # --- 1. CONFIGURACIÓN DE LA VENTANA ---
+        self.title("VoxFlow 2.0 - Coqui TTS")  # Título de la app
+        self.geometry("800x600")               # Tamaño inicial
+        self.grid_columnconfigure(0, weight=1) # Columna principal expandible
+        self.grid_rowconfigure(2, weight=1)    # Fila del texto expandible
+
+        # --- 2. GESTIÓN DE ESTADO ---
+        self.synthesizer = None                # Instancia de la IA
+        self.audio_data = None                 # Buffer de audio
+        self.sample_rate = None                # Frecuencia de muestreo
+
+        # --- 3. CREACIÓN DE COMPONENTES ---
+
+        # Etiqueta de estado
+        self.status_label = ctk.CTkLabel(self, text="Iniciando IA, por favor espera...", font=("Arial", 14))
+        self.status_label.grid(row=0, column=0, padx=20, pady=10)
+
+        # Selector de voz (Dropdown)
+        self.speaker_dropdown = ctk.CTkComboBox(self, values=["Cargando..."], width=250)
+        self.speaker_dropdown.grid(row=1, column=0, padx=20, pady=10)
+        self.speaker_dropdown.set("Selecciona Voz")
+
+        # Campo de texto multilínea
+        self.text_input = ctk.CTkTextbox(self, font=("Arial", 14))
+        self.text_input.grid(row=2, column=0, padx=20, pady=10, sticky="nsew")
+
+        # Contenedor de botones de control
+        self.button_frame = ctk.CTkFrame(self)
+        self.button_frame.grid(row=3, column=0, padx=20, pady=20, sticky="ew")
+        self.button_frame.grid_columnconfigure((0, 1, 2), weight=1)
+
+        # Botón para generar el audio
+        self.btn_generate = ctk.CTkButton(self.button_frame, text="Generar Audio", command=self.start_synthesis)
+        self.btn_generate.grid(row=0, column=0, padx=10, pady=10)
+        self.btn_generate.configure(state="disabled") # Desactivado hasta que cargue la IA
+
+        # Botón para reproducir
+        self.btn_play = ctk.CTkButton(self.button_frame, text="Reproducir", command=self.play_audio, fg_color="green")
+        self.btn_play.grid(row=0, column=1, padx=10, pady=10)
+        self.btn_play.configure(state="disabled")
+
+        # Botón para detener
+        self.btn_stop = ctk.CTkButton(self.button_frame, text="Detener", command=lambda: sd.stop(), fg_color="red")
+        self.btn_stop.grid(row=0, column=2, padx=10, pady=10)
+
+        # --- 4. INICIALIZACIÓN ASÍNCRONA ---
+        threading.Thread(target=self.load_engine, daemon=True).start()
+
+    def load_engine(self):
+        """Carga el motor de IA sin congelar la ventana."""
+        try:
+            self.synthesizer = Synthesizer()               # Inicializa Coqui TTS
+            speakers = self.synthesizer.get_speakers()    # Obtiene lista de voces
+            self.speaker_dropdown.configure(values=speakers)
+            if speakers:
+                self.speaker_dropdown.set(speakers[0])
+            
+            # Actualiza la UI una vez listo
+            self.status_label.configure(text="Motor IA listo para usar")
+            self.btn_generate.configure(state="normal")
+        except Exception as e:
+            self.status_label.configure(text=f"Error al cargar: {e}")
+
+    def start_synthesis(self):
+        """Lanza la síntesis en un hilo nuevo para no bloquear la app."""
+        text = self.text_input.get("1.0", "end-1c") # Obtiene el texto del cuadro
+        voice = self.speaker_dropdown.get()         # Obtiene la voz seleccionada
+        
+        if not text.strip():
+            self.status_label.configure(text="Por favor, escribe algo")
             return
 
+        self.btn_generate.configure(state="disabled")
+        self.status_label.configure(text="Generando audio...")
+        
+        # Ejecuta el proceso pesado fuera del hilo principal
+        threading.Thread(target=self.run_process, args=(text, voice), daemon=True).start()
+
+    def run_process(self, text, voice):
+        """Proceso interno de síntesis de audio."""
         try:
-            # Comando para ejecutar Piper:
-            # 1. 'echo' envía el texto al proceso
-            # 2. 'piper' procesa el texto y lo reproduce por los altavoces
-            # Nota: En Windows, Linux y Mac, Piper puede enviar el audio directamente a 'aplay' o 'ffplay'
-            command = f'echo "{text_input.value}" | piper --model {MODEL_PATH} --output_raw | aplay -r 22050 -f S16_LE -t raw'
+            # Llama a tu función de síntesis en voxflow_core
+            self.audio_data, self.sample_rate = self.synthesizer.synthesize(text, voice)
             
-            # Ejecutamos el comando en el sistema operativo de forma asíncrona
-            subprocess.Popen(command, shell=True)
-            
-        except Exception as ex:
-            # Si ocurre un error, lo mostramos en una notificación
-            page.snack_bar = ft.SnackBar(ft.Text(f"Error: {str(ex)}"))
-            page.snack_bar.open = True
-            page.update()
+            # Habilita los controles al terminar
+            self.status_label.configure(text="Audio generado con éxito")
+            self.btn_play.configure(state="normal")
+            self.btn_generate.configure(state="normal")
+        except Exception as e:
+            self.status_label.configure(text=f"Error: {e}")
+            self.btn_generate.configure(state="normal")
 
-    # Creamos el botón con un icono de reproducción
-    play_button = ft.ElevatedButton(
-        "Convertir a Voz Natural",
-        icon=ft.icons.PLAY_ARROW,
-        on_click=speak_text
-    )
+    def play_audio(self):
+        """Reproduce el audio almacenado en memoria."""
+        if self.audio_data is not None:
+            sd.play(self.audio_data, self.sample_rate)
 
-    # Añadimos los elementos visuales a la página de la aplicación
-    page.add(
-        ft.Text("Convertidor de Texto a Voz (Multiplataforma)", size=24, weight="bold"),
-        text_input,
-        play_button
-    )
-
-# Punto de entrada para ejecutar la aplicación
+# --- 5. ARRANQUE DE LA APLICACIÓN ---
 if __name__ == "__main__":
-    # ft.app inicia la aplicación; target=main define la función principal
-    # Para móviles se puede usar view=ft.AppView.WEB_BROWSER durante pruebas
-    ft.app(target=main)
+    app = VoxFlowApp()
+    app.mainloop() # Inicia el ciclo de vida de la ventana
