@@ -469,8 +469,8 @@ def main(page: ft.Page):
     # Creamos la vista de "cargando".
     loading_view = ft.Column(
         [loading_indicator, loading_label],
-        main_alignment="center",
-        cross_axis_alignment="center",
+        alignment="center",
+        horizontal_alignment="center",
         height=page.height,
         width=page.width,
         visible=True  # Visible por defecto.
@@ -488,17 +488,17 @@ def main(page: ft.Page):
                     ft.Row([saved_voices_dropdown, save_config_button]),
                     ft.Row([import_configs_button, export_configs_button])
                 ], spacing=5)
-            ], main_alignment="start"),
+            ], alignment="start"),
 
             # Controles principales y visualización.
             synthesize_button,
             synthesis_progress,
             waveform_plot,
-            ft.Row([play_button, stop_button], main_alignment="center"),
+            ft.Row([play_button, stop_button], alignment="center"),
             save_button
         ],
-        main_alignment="start",
-        cross_axis_alignment="center",
+        alignment="start",
+        horizontal_alignment="center",
         spacing=15,
         visible=False  # Oculta por defecto.
     )
