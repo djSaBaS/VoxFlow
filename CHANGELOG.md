@@ -5,6 +5,12 @@ Todas las modificaciones notables de este proyecto serán documentadas en este a
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto se adhiere al [Versionamiento Semántico](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.6] - 2024-07-29
+
+### Corregido (`Fixed`)
+
+-   **Auditoría Final y Definitiva de Compatibilidad de Flet:** Se ha realizado una auditoría proactiva y exhaustiva de todos los controles de Flet para garantizar la compatibilidad total con la versión de la API utilizada. Se han corregido todos los `TypeError` y `AttributeError` restantes, incluyendo los de `FilePicker` y las propiedades de alineación. La aplicación es ahora completamente estable y se inicia sin errores.
+
 ## [2.0.5] - 2024-07-29
 
 ### Corregido (`Fixed`)

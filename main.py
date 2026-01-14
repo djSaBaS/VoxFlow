@@ -361,8 +361,9 @@ def main(page: ft.Page):
             page.snack_bar.open = True
             page.update()
 
-    # Creamos el diálogo de guardado de archivos.
-    file_picker = ft.FilePicker(on_result=save_file_result)
+    # Creamos el diálogo de guardado de archivos y asignamos el manejador después.
+    file_picker = ft.FilePicker()
+    file_picker.on_result = save_file_result
     # Lo añadimos a la superposición de la página para que sea visible.
     page.overlay.append(file_picker)
 
@@ -467,8 +468,8 @@ def main(page: ft.Page):
     page.add(
         ft.Column(
             [loading_indicator, loading_label],
-            alignment=ft.MainAxisAlignment.CENTER,
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+            alignment="center",
+            horizontal_alignment="center",
             height=page.height,
             width=page.width
         )
@@ -486,15 +487,15 @@ def main(page: ft.Page):
                     ft.Row([saved_voices_dropdown, save_config_button]),
                     ft.Row([import_configs_button, export_configs_button])
                 ], spacing=5)
-            ], alignment=ft.MainAxisAlignment.START),
+            ], alignment="start"),
 
             # Controles principales y visualización.
             synthesize_button,
             synthesis_progress,
             waveform_plot,
-            ft.Row([play_button, stop_button], alignment=ft.MainAxisAlignment.CENTER),
+            ft.Row([play_button, stop_button], alignment="center"),
             save_button
-        ], alignment=ft.MainAxisAlignment.START, horizontal_alignment=ft.CrossAxisAlignment.CENTER, spacing=15)
+        ], alignment="start", horizontal_alignment="center", spacing=15)
     )
 
     # Iniciamos la carga del modelo en un hilo separado para no bloquear la UI.
