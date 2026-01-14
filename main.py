@@ -429,9 +429,9 @@ def main(page: ft.Page):
                 voice_state_manager.add_state(initial_speaker)
                 undo_button.disabled = False # Se puede deshacer al menos una vez al estado inicial.
 
-            # Ocultamos el indicador de carga.
-            loading_indicator.visible = False
-            loading_label.visible = False
+            # Alternamos la visibilidad de las vistas.
+            loading_view.visible = False
+            main_view.visible = True
 
             # Habilitamos los controles principales de la UI.
             text_input.disabled = False
@@ -466,20 +466,19 @@ def main(page: ft.Page):
 
     # --- 6. DISEÑO Y ESTRUCTURA DE LA PÁGINA ---
 
-    # Añadimos los controles iniciales de carga a la página.
-    page.add(
-        ft.Column(
-            [loading_indicator, loading_label],
-            alignment="center",
-            horizontal_alignment="center",
-            height=page.height,
-            width=page.width
-        )
+    # Creamos la vista de "cargando".
+    loading_view = ft.Column(
+        [loading_indicator, loading_label],
+        main_alignment="center",
+        cross_axis_alignment="center",
+        height=page.height,
+        width=page.width,
+        visible=True  # Visible por defecto.
     )
 
-    # Añadimos el resto de la interfaz (inicialmente vacía hasta que cargue el modelo).
-    page.add(
-        ft.Column([
+    # Creamos la vista principal de la aplicación.
+    main_view = ft.Column(
+        [
             # Fila superior con el campo de texto y los controles de voz.
             ft.Row([
                 text_input,
@@ -489,15 +488,27 @@ def main(page: ft.Page):
                     ft.Row([saved_voices_dropdown, save_config_button]),
                     ft.Row([import_configs_button, export_configs_button])
                 ], spacing=5)
-            ], alignment="start"),
+            ], main_alignment="start"),
 
             # Controles principales y visualización.
             synthesize_button,
             synthesis_progress,
             waveform_plot,
-            ft.Row([play_button, stop_button], alignment="center"),
+            ft.Row([play_button, stop_button], main_alignment="center"),
             save_button
-        ], alignment="start", horizontal_alignment="center", spacing=15)
+        ],
+        main_alignment="start",
+        cross_axis_alignment="center",
+        spacing=15,
+        visible=False  # Oculta por defecto.
+    )
+
+    # Usamos un Stack para superponer las vistas y controlar cuál es visible.
+    page.add(
+        ft.Stack([
+            loading_view,
+            main_view
+        ])
     )
 
     # Iniciamos la carga del modelo en un hilo separado para no bloquear la UI.

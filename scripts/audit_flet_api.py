@@ -63,17 +63,17 @@ def audit_controls():
         print("ft.SnackBar: OK")
 
         # Auditoría de ft.Column y ft.Row con alineación
-        # Se usarán cadenas de texto para las propiedades de alineación
+        # Se usarán los nombres de propiedad modernos para la alineación
         ft.Column(
             [ft.Text("item")],
-            alignment="center",
-            horizontal_alignment="center",
+            main_alignment="center",
+            cross_axis_alignment="center",
         )
         print("ft.Column: OK")
 
         ft.Row(
             [ft.Text("item")],
-            alignment="center"
+            main_alignment="center"
         )
         print("ft.Row: OK")
 
