@@ -102,7 +102,7 @@ def main(page: ft.Page):
     redo_button = ft.IconButton(icon="REDO", tooltip="Rehacer cambio de voz", on_click=None, disabled=True)
 
     # Botón para iniciar la síntesis de texto a voz.
-    synthesize_button = ft.ElevatedButton(
+    synthesize_button = ft.FilledButton(
         content=ft.Text("Generar Audio"),
         icon="SPEAKER_PHONE",
         on_click=None, # La función se asignará después.
@@ -121,7 +121,7 @@ def main(page: ft.Page):
     stop_button = ft.IconButton(icon="STOP", on_click=None, tooltip="Detener", disabled=True)
 
     # Botón para guardar el archivo de audio.
-    save_button = ft.ElevatedButton(content=ft.Text("Guardar como .wav"), icon="SAVE", on_click=None, disabled=True)
+    save_button = ft.FilledButton(content=ft.Text("Guardar como .wav"), icon="SAVE", on_click=None, disabled=True)
 
     # Controles para la gestión de configuraciones de voz.
     saved_voices_dropdown = ft.Dropdown(label="Configuraciones Guardadas", options=[])
@@ -341,7 +341,7 @@ def main(page: ft.Page):
         threading.Thread(target=synthesize_thread, args=(e,)).start()
 
     # Función que se ejecuta cuando el diálogo de guardado se cierra.
-    def save_file_result(e: ft.FilePickerResultEvent):
+    def save_file_result(e: ft.FilePickerResult):
         # Obtenemos la ruta del archivo seleccionada por el usuario.
         target_path = e.path
         # Si el usuario no canceló, procedemos a guardar.
@@ -368,7 +368,7 @@ def main(page: ft.Page):
     page.overlay.append(file_picker)
 
     # --- Funciones para Importar/Exportar ---
-    def on_import_result(e: ft.FilePickerResultEvent):
+    def on_import_result(e: ft.FilePickerResult):
         if e.files:
             import_path = e.files[0].path
             try:
@@ -384,7 +384,7 @@ def main(page: ft.Page):
             page.snack_bar.open = True
             page.update()
 
-    def on_export_result(e: ft.FilePickerResultEvent):
+    def on_export_result(e: ft.FilePickerResult):
         if e.path:
             export_path = e.path
             if not export_path.lower().endswith(".json"):

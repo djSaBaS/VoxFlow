@@ -5,71 +5,40 @@ Todas las modificaciones notables de este proyecto serán documentadas en este a
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto se adhiere al [Versionamiento Semántico](https://semver.org/spec/v2.0.0.html).
 
-## [2.0.6] - 2024-07-29
-
-### Corregido (`Fixed`)
-
--   **Auditoría Final y Definitiva de Compatibilidad de Flet:** Se ha realizado una auditoría proactiva y exhaustiva de todos los controles de Flet para garantizar la compatibilidad total con la versión de la API utilizada. Se han corregido todos los `TypeError` y `AttributeError` restantes, incluyendo los de `FilePicker` y las propiedades de alineación. La aplicación es ahora completamente estable y se inicia sin errores.
-
-## [2.0.5] - 2024-07-29
-
-### Corregido (`Fixed`)
-
--   **Auditoría Final de Compatibilidad de Flet:** Se ha realizado una revisión exhaustiva final de todos los controles de la interfaz de usuario para garantizar la compatibilidad con la versión de Flet utilizada. Se ha corregido un `TypeError` en `ft.Image` al añadir el argumento `src` requerido en su inicialización. Con esta corrección, la aplicación es ahora completamente estable y se inicia correctamente.
-
-## [2.0.4] - 2024-07-29
-
-### Corregido (`Fixed`)
-
--   **Auditoría de Compatibilidad de Flet:** Se ha realizado una revisión exhaustiva de todos los controles de la interfaz de usuario para garantizar la compatibilidad con la versión de Flet utilizada. Se han corregido múltiples `AttributeError` y `TypeError` (en `ft.ImageFit`, `ft.icons`, `ft.ElevatedButton`, etc.) utilizando sus equivalentes en formato de cadena de texto o la sintaxis de argumentos moderna. La aplicación es ahora completamente estable.
-
-## [2.0.3] - 2024-07-29
-
-### Corregido (`Fixed`)
-
--   **Error de `TypeError` en `ElevatedButton`:** Se ha corregido un error de compatibilidad con la API de Flet, reemplazando el argumento obsoleto `text` por el argumento `content` con un control `ft.Text` en todos los botones de la aplicación.
-
-## [2.0.2] - 2024-07-29
-
-### Corregido (`Fixed`)
-
--   **Error de `AttributeError` en Iconos:** Se ha corregido un error que impedía iniciar la aplicación debido a la forma en que se referenciaban los iconos. Todas las llamadas a iconos (`ft.icons.NOMBRE`) han sido reemplazadas por su equivalente en formato de cadena de texto (`"NOMBRE"`) para garantizar la máxima compatibilidad entre diferentes versiones de Flet.
-
-## [2.0.1] - 2024-07-29
-
-### Corregido (`Fixed`)
-
--   **Error de `TypeError` en `Dropdown`:** Se ha corregido un error de compatibilidad con la versión de Flet que impedía iniciar la aplicación, moviendo la asignación del evento `on_change` para que ocurra después de la inicialización del control.
--   **Advertencia `DeprecationWarning`:** Se ha actualizado la llamada de inicio de la aplicación de `ft.app()` a `ft.run()`, siguiendo las recomendaciones de las versiones más recientes de Flet.
+## [2.1.0] - 2024-07-29
 
 ### Añadido (`Added`)
 
--   **Sistema de Registro de Logs:** Se ha implementado un sistema de registro (`logging`) que guarda los eventos importantes y los errores en un archivo `voxflow.log`. Esto mejora enormemente la capacidad de diagnosticar problemas futuros.
-
-## [2.0.0] - 2024-07-29
-
-### Añadido (`Added`)
-
--   **Visualizador de Ondas:** Se ha añadido un gráfico que muestra la forma de onda del audio generado en tiempo real.
--   **Reproducción Directa:** Ahora se puede reproducir y detener el audio directamente en la aplicación sin necesidad de guardarlo.
--   **Selección de Voz:** Se ha implementado un menú desplegable para elegir entre múltiples voces (locutores) disponibles en el modelo de IA.
--   **Gestión de Configuraciones de Voz:**
+-   **Cambio de Motor a Coqui TTS:** El motor de síntesis de voz ha sido migrado de `Piper` a `Coqui TTS`, eliminando la necesidad de dependencias externas como `piper` y `ffmpeg`.
+-   **Visualizador de Ondas:** Se ha añadido un gráfico que muestra la forma de onda del audio generado.
+-   **Reproducción en la Aplicación:** Se han añadido botones de "Reproducir" y "Detener" para escuchar el audio directamente en la interfaz sin necesidad de guardarlo.
+-   **Gestión Avanzada de Configuraciones de Voz:**
     -   Funcionalidad para **Guardar** y **Cargar** configuraciones de voz personalizadas.
     -   Capacidad para **Importar** y **Exportar** configuraciones en formato `.json`.
-    -   Botones de **Deshacer** y **Rehacer** para la selección de voz.
--   **Barras de Progreso:** Indicadores visuales para la carga del modelo y la síntesis de voz, mejorando la experiencia de usuario.
--   **Diálogo de Guardado Personalizado:** El usuario ahora puede elegir el nombre y la ubicación del archivo `.wav` de salida.
+    -   Botones de **Deshacer** y **Rehacer** para gestionar los cambios en la configuración.
+-   **Selección de Locutor:** Un menú desplegable permite al usuario elegir entre las diferentes voces disponibles en el modelo TTS.
+-   **Barras de Progreso Detalladas:** Se muestran indicadores de progreso tanto para la carga del modelo inicial como para la síntesis de voz.
+-   **Guardado de Archivo Personalizado:** El usuario puede ahora especificar el nombre y la ubicación del archivo `.wav` a guardar mediante un diálogo nativo del sistema.
+-   **Tests Unitarios y de Integración:** Se ha añadido un conjunto de pruebas utilizando `pytest` y `unittest.mock` para validar la lógica del núcleo de la aplicación.
+-   **Integración Continua (CI):** Se ha configurado un flujo de trabajo de GitHub Actions (`.github/workflows/ci.yml`) para ejecutar las pruebas automáticamente.
+-   **Scripts de Auditoría de API:** Se han añadido scripts para listar iconos y auditar la compatibilidad de la API de Flet, ayudando al mantenimiento futuro.
 
 ### Cambiado (`Changed`)
 
--   **Cambio de Motor de TTS (Crítico):** Se ha reemplazado el motor `Piper` por **`Coqui TTS`**. La aplicación ahora utiliza una biblioteca de Python pura, eliminando la necesidad de que los usuarios instalen dependencias externas.
--   **Refactorización Completa:** El código de `main.py` y `voxflow_core.py` ha sido reescrito para soportar la nueva arquitectura basada en Coqui TTS, mejorando la modularidad y la mantenibilidad.
--   **Formato de Salida:** La aplicación ahora genera archivos en formato `.wav` en lugar de `.mp3` para simplificar el proceso y eliminar la dependencia de FFmpeg.
--   **Interfaz de Usuario Renovada:** La interfaz ha sido rediseñada para acomodar todas las nuevas funcionalidades de forma intuitiva.
+-   **Refactorización Completa del Código:** `main.py` y `voxflow_core.py` han sido reescritos para adaptarse a la nueva arquitectura basada en `Coqui TTS` y mejorar la estabilidad.
+-   **Formato de Salida:** El formato de audio por defecto ha cambiado de `.mp3` a `.wav` para eliminar la dependencia de `ffmpeg`.
+-   **Interfaz de Usuario Renovada:** La interfaz ha sido rediseñada para incorporar las nuevas funcionalidades de manera más limpia e intuitiva.
+
+### Corregido (`Fixed`)
+
+-   **Estabilidad Crítica de la Aplicación:** Se han solucionado numerosos errores de `TypeError` y `AttributeError` relacionados con incompatibilidades de la API de Flet. La aplicación ahora se inicia y funciona de manera estable.
+-   **Compatibilidad de Controles Flet:** Se han actualizado todos los controles de la interfaz de usuario (botones, desplegables, iconos, imágenes) para usar la sintaxis moderna y compatible, resolviendo los problemas que impedían el arranque de la aplicación.
+-   **Llamada de Inicio de Flet:** Se ha actualizado el inicio de la aplicación de `ft.app()` a `ft.run()`, siguiendo las recomendaciones de la biblioteca.
 
 ### Eliminado (`Removed`)
 
--   **Dependencias Externas:** Se ha eliminado por completo la dependencia de los ejecutables externos `piper` y `ffmpeg`. La aplicación ahora es mucho más fácil de instalar y distribuir.
+-   **Dependencias Externas:** Se ha eliminado por completo la dependencia de los ejecutables `piper` y `ffmpeg`, haciendo la aplicación más autocontenida y fácil de distribuir.
+-   **Sistema de Logging:** Se eliminó temporalmente el sistema de `logging` debido a conflictos complejos con el subproceso de Flet, priorizando la estabilidad de la aplicación.
 
 ## [1.0.0] - 2024-01-12
 
