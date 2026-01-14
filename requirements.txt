@@ -1,4 +1,4 @@
-flet==0.80.1
+flet>=0.22.0
 coqui-tts
 sounddevice
 scipy

@@ -98,13 +98,13 @@ def main(page: ft.Page):
     )
 
     # Botones de Deshacer y Rehacer para los ajustes de voz.
-    undo_button = ft.IconButton(icon="UNDO", tooltip="Deshacer cambio de voz", on_click=None, disabled=True)
-    redo_button = ft.IconButton(icon="REDO", tooltip="Rehacer cambio de voz", on_click=None, disabled=True)
+    undo_button = ft.IconButton(icon=ft.icons.UNDO, tooltip="Deshacer cambio de voz", on_click=None, disabled=True)
+    redo_button = ft.IconButton(icon=ft.icons.REDO, tooltip="Rehacer cambio de voz", on_click=None, disabled=True)
 
     # Botón para iniciar la síntesis de texto a voz.
     synthesize_button = ft.FilledButton(
         content=ft.Text("Generar Audio"),
-        icon="SPEAKER_PHONE",
+        icon=ft.icons.SPEAKER_PHONE,
         on_click=None, # La función se asignará después.
         disabled=True
     )
@@ -117,17 +117,17 @@ def main(page: ft.Page):
     waveform_plot = ft.Image(src="", visible=False, width=600, height=300, fit="contain")
 
     # Botones para la reproducción de audio.
-    play_button = ft.IconButton(icon="PLAY_ARROW", on_click=None, tooltip="Reproducir", disabled=True)
-    stop_button = ft.IconButton(icon="STOP", on_click=None, tooltip="Detener", disabled=True)
+    play_button = ft.IconButton(icon=ft.icons.PLAY_ARROW, on_click=None, tooltip="Reproducir", disabled=True)
+    stop_button = ft.IconButton(icon=ft.icons.STOP, on_click=None, tooltip="Detener", disabled=True)
 
     # Botón para guardar el archivo de audio.
-    save_button = ft.FilledButton(content=ft.Text("Guardar como .wav"), icon="SAVE", on_click=None, disabled=True)
+    save_button = ft.FilledButton(content=ft.Text("Guardar como .wav"), icon=ft.icons.SAVE, on_click=None, disabled=True)
 
     # Controles para la gestión de configuraciones de voz.
     saved_voices_dropdown = ft.Dropdown(label="Configuraciones Guardadas", options=[])
-    save_config_button = ft.IconButton(icon="BOOKMARK_ADD", tooltip="Guardar configuración de voz actual", on_click=None)
-    import_configs_button = ft.IconButton(icon="FILE_UPLOAD", tooltip="Importar configuraciones", on_click=None)
-    export_configs_button = ft.IconButton(icon="FILE_DOWNLOAD", tooltip="Exportar configuraciones", on_click=None)
+    save_config_button = ft.IconButton(icon=ft.icons.BOOKMARK_ADD, tooltip="Guardar configuración de voz actual", on_click=None)
+    import_configs_button = ft.IconButton(icon=ft.icons.FILE_UPLOAD, tooltip="Importar configuraciones", on_click=None)
+    export_configs_button = ft.IconButton(icon=ft.icons.FILE_DOWNLOAD, tooltip="Exportar configuraciones", on_click=None)
 
     # --- 4. LÓGICA DE LA APLICACIÓN Y MANEJADORES DE EVENTOS ---
 

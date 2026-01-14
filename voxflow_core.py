@@ -23,8 +23,8 @@ class Synthesizer:
         # Mensaje informativo para el usuario sobre el dispositivo que se está utilizando.
         print(f"Usando dispositivo: {self.device}")
 
-        # Ruta al modelo TTS que vamos a utilizar. XTTS v2 es un modelo multilingüe y multi-locutor de alta calidad.
-        model_name = "tts_models/multilingual/multi-dataset/xtts_v2"
+        # Ruta al modelo TTS que vamos a utilizar. Cambiamos a un modelo VITS en español que soporta selección de locutor por nombre.
+        model_name = "tts_models/es/css10/vits"
 
         # Inicializamos la API de TTS con el modelo especificado y lo movemos al dispositivo seleccionado (GPU o CPU).
         # Esto puede tardar un momento la primera vez, ya que necesita descargar el modelo.
@@ -67,6 +67,9 @@ class Synthesizer:
 
         # Obtenemos la frecuencia de muestreo del sintetizador. Es importante para la reproducción y guardado.
         sample_rate = self.tts.synthesizer.output_sample_rate
+
+        # Añadimos una impresión de depuración para verificar el audio generado.
+        print(f"Audio generado: shape={audio_data.shape}, rate={sample_rate}, min={audio_data.min()}, max={audio_data.max()}")
 
         # Devolvemos tanto los datos del audio como la frecuencia de muestreo.
         return audio_data, sample_rate

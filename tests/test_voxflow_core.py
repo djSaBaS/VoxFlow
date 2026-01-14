@@ -35,7 +35,7 @@ def test_synthesizer_initialization(mock_tts_class):
 
     # -- Assert (Verificación) --
     # Verificamos que el constructor de TTS fue llamado una vez con el nombre del modelo correcto.
-    mock_tts_class.assert_called_once_with("tts_models/multilingual/multi-dataset/xtts_v2")
+    mock_tts_class.assert_called_once_with("tts_models/es/css10/vits")
     # Verificamos que el método 'to' (para mover a CPU/GPU) fue llamado.
     mock_tts_class.return_value.to.assert_called_once()
     # Verificamos que la lista de locutores en nuestra instancia es la que definimos.
