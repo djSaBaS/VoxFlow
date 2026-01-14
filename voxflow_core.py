@@ -31,7 +31,13 @@ class Synthesizer:
         self.tts = TTS(model_name).to(self.device)
 
         # Obtenemos y almacenamos la lista de locutores (voces) disponibles en este modelo.
-        self.speakers = self.tts.speakers
+        # Algunos modelos no son multivoz y devuelven None
+        if self.tts.speakers:
+            self.speakers = self.tts.speakers
+        else:
+            # Creamos un speaker "virtual" para modelos de una sola voz
+            self.speakers = ["default"]
+
 
     # Método para obtener la lista de voces/locutores disponibles.
     def get_speakers(self):
@@ -60,7 +66,11 @@ class Synthesizer:
         # Usamos el método 'tts' del objeto para generar el audio.
         # 'speaker' especifica la voz a usar y 'language' el idioma del texto.
         # La salida es una lista de floats que representa la onda de sonido.
-        wav_output = self.tts.tts(text=text, speaker=speaker_name, language="es")
+        if speaker_name == "default":
+            wav_output = self.tts.tts(text=text)
+        else:
+            wav_output = self.tts.tts(text=text, speaker=speaker_name)
+
 
         # Convertimos la lista de salida a un array de NumPy con el tipo de dato float32.
         audio_data = np.array(wav_output, dtype=np.float32)
