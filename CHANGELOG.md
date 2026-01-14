@@ -5,6 +5,12 @@ Todas las modificaciones notables de este proyecto serán documentadas en este a
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 y este proyecto se adhiere al [Versionamiento Semántico](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.5] - 2024-07-29
+
+### Corregido (`Fixed`)
+
+-   **Auditoría Final de Compatibilidad de Flet:** Se ha realizado una revisión exhaustiva final de todos los controles de la interfaz de usuario para garantizar la compatibilidad con la versión de Flet utilizada. Se ha corregido un `TypeError` en `ft.Image` al añadir el argumento `src` requerido en su inicialización. Con esta corrección, la aplicación es ahora completamente estable y se inicia correctamente.
+
 ## [2.0.4] - 2024-07-29
 
 ### Corregido (`Fixed`)
