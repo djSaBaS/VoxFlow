@@ -1,6 +1,7 @@
+customtkinter==5.2.2
 TTS==0.22.0
-torch
 sounddevice==0.4.6
-scipy==1.10.1
-matplotlib==3.7.3
+scipy
+matplotlib==3.9.0
 Pillow==10.3.0
+pytest==8.2.2
