@@ -15,6 +15,9 @@ cffi>=1.15
 # Plotting
 matplotlib==3.7.5
 
+# Build helpers
+wheel
+
 # Utils
 Pillow==10.3.0
 pytest==8.2.2
