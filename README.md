@@ -1,55 +1,72 @@
-# 🎙️ VoxFlow v2.0: Natural TTS con IA Integrada
+# 🎙️ VoxFlow v2.1: Natural TTS con IA Integrada y CustomTkinter
 
-**VoxFlow** es una aplicación de escritorio para la síntesis de voz (Text-to-Speech) de alta calidad, ahora impulsada por el motor de inteligencia artificial de **Coqui TTS**. Esta nueva versión elimina las dependencias externas, ofreciendo una experiencia de usuario más fluida, potente y totalmente autocontenida.
+**VoxFlow** es una aplicación de escritorio para la síntesis de voz (Text-to-Speech) de alta calidad, impulsada por el motor de inteligencia artificial de **Coqui TTS** y construida con la moderna librería de interfaz gráfica **CustomTkinter**.
+
+---
+
+## ⚠️ Requisitos Obligatorios
+
+-   **Python 3.10 (requerido)**. Se recomienda el uso de un entorno virtual (`venv`).
+-   Este proyecto utiliza Coqui TTS (`TTS`), que **no es compatible con versiones de Python 3.12 o superiores**. Asegúrate de usar una versión de Python 3.10 para evitar problemas de instalación.
 
 ---
 
 ## ✨ Características Principales
 
-- **Motor de IA Avanzado:** Utiliza los modelos de voz de última generación de Coqui TTS para una claridad y naturalidad excepcionales.
-- **Totalmente Autocontenida:** Ya **no requiere instalar `piper` ni `ffmpeg`**. Toda la funcionalidad está empaquetada dentro de la aplicación Python.
+- **Motor de IA Avanzado:** Utiliza `xtts_v2`, un modelo de voz de última generación de Coqui TTS para una claridad y naturalidad excepcionales, con capacidad de clonación de voz.
+- **Selección de Voces por Referencia:** Elige entre voces predefinidas (masculina, femenina, infantil) que sirven como referencia para la clonación de voz. ¡Puedes añadir tus propios archivos `.wav` en la carpeta `assets/voices` para crear nuevas voces!
 - **Multiplataforma:** Diseñada para funcionar en **Windows, macOS y Linux**.
-- **Interfaz Gráfica Intuitiva:** Una UI moderna y fácil de usar construida con Flet.
+- **Interfaz Gráfica Moderna:** Una UI intuitiva y estéticamente agradable construida con **CustomTkinter**.
 - **Funcionalidades Avanzadas:**
-  - **Selección de Voz Dinámica:** Elige entre una variedad de voces (locutores) disponibles en el modelo.
   - **Visualizador de Onda:** Analiza la forma de onda del audio generado en tiempo real.
   - **Reproducción Instantánea:** Escucha el audio con controles de **Play/Stop** sin necesidad de guardarlo primero.
-  - **Guardado Personalizado:** Guarda el resultado como un archivo **`.wav`** con el nombre que elijas.
-  - **Gestión de Configuraciones de Voz:**
-    - **Guarda y Carga** tus ajustes de voz preferidos.
-    - **Exporta e Importa** configuraciones en formato `.json` para compartirlas.
-    - **Deshacer y Rehacer** cambios en la selección de voz.
+  - **Guardado Personalizado:** Guarda el resultado como un archivo **`.wav`** donde prefieras.
+  - **Gestión de Sesión:** **Guarda y Carga** tu texto y voz seleccionada para retomar tu trabajo fácilmente.
 - **Privacidad Total:** El procesamiento se realiza 100% en tu dispositivo.
 
 ---
 
 ## 🛠️ Instalación y Configuración
 
-Poner en marcha la aplicación ahora es más fácil que nunca.
+### 1. Clonar el Repositorio
+```bash
+git clone https://github.com/tu-usuario/VoxFlow.git
+cd VoxFlow
+```
 
-### 1. Requisitos Previos
+### 2. Configurar un Entorno Virtual con Python 3.10
 
--   **Python 3.9+** instalado en tu sistema.
+Este paso es crucial. Para evitar conflictos con otras versiones de Python que puedas tener en tu sistema, te recomendamos encarecidamente crear un entorno virtual que utilice específicamente Python 3.10.
 
-### 2. Configuración del Proyecto
+**Si ya tienes Python 3.10 instalado:**
 
-1.  **Clonar el repositorio:**
+*   **En macOS / Linux:**
     ```bash
-    git clone https://github.com/tu-usuario/VoxFlow.git
-    cd VoxFlow
+    # Crea el entorno virtual llamado '.venv' usando el ejecutable de python3.10
+    python3.10 -m venv .venv
+
+    # Activa el entorno
+    source .venv/bin/activate
     ```
 
-2.  **Instalar las dependencias de Python:**
-    Se recomienda encarecidamente crear un entorno virtual.
-    ```bash
-    python3 -m venv .venv
-    source .venv/bin/activate  # En Windows: .venv\Scripts\activate
+*   **En Windows (PowerShell):**
+    ```powershell
+    # Asumiendo que 'py -3.10' apunta a tu instalación de Python 3.10
+    py -3.10 -m venv .venv
+
+    # Activa el entorno
+    .venv\Scripts\Activate.ps1
     ```
-    Luego, instala todos los paquetes necesarios con un solo comando:
-    ```bash
-    pip install -r requirements.txt
-    ```
-    *Nota: La primera vez que instales `coqui-tts`, se descargarán varias dependencias, incluyendo PyTorch, lo cual puede tardar unos minutos.*
+    *Si usas el Símbolo del sistema (CMD), el comando de activación es `.venv\Scripts\activate.bat`.*
+
+Una vez activado, verás `(.venv)` al principio de la línea de tu terminal. Esto confirma que cualquier paquete de Python que instales quedará aislado en este proyecto.
+
+### 3. Instalar las Dependencias
+Con el entorno virtual activado, instala todos los paquetes necesarios con un solo comando:
+```bash
+pip install -r requirements.txt
+```
+*Nota: La primera vez que instales `TTS`, se descargarán varias dependencias, incluyendo PyTorch, lo cual puede tardar unos minutos.*
 
 ---
 
@@ -57,40 +74,28 @@ Poner en marcha la aplicación ahora es más fácil que nunca.
 
 Una vez completada la instalación, ejecuta la aplicación con:
 ```bash
-python3 main.py
+python main.py
 ```
-La primera vez que ejecutes la aplicación, Coqui TTS descargará automáticamente el modelo de voz necesario. Este proceso puede tardar un poco y requiere conexión a internet. Las siguientes veces, la aplicación se iniciará mucho más rápido.
+La primera vez que ejecutes la aplicación, Coqui TTS descargará automáticamente el modelo de voz `xtts_v2`. Este proceso puede tardar un poco y requiere conexión a internet. Las siguientes veces, la aplicación se iniciará mucho más rápido.
 
 En la ventana principal podrás:
-1.  **Esperar a que cargue el modelo** (verás un indicador).
+1.  **Esperar a que cargue el modelo** (verás el mensaje "Motor IA listo para usar").
 2.  **Escribir o pegar texto** en el área designada.
-3.  **Seleccionar una voz** en el menú desplegable.
+3.  **Seleccionar una voz** ("Voz Masculina", "Voz Femenina", etc.) en el menú desplegable.
 4.  Pulsar **"Generar Audio"**. La forma de onda aparecerá en el visor.
 5.  Usar los botones **Play/Stop** para escuchar el resultado.
-6.  Pulsar **"Guardar como .wav"** para guardar el audio.
-7.  Utilizar los botones de **gestión de configuraciones** para guardar, cargar, importar o exportar tus voces favoritas.
+6.  Pulsar **"Guardar Audio"** para guardar el archivo `.wav`.
+7.  Utilizar **"Cargar/Guardar Config"** para gestionar tu sesión.
 
 ---
 
 ## 📂 Estructura del Proyecto
 
--   `main.py`: Contiene todo el código de la interfaz de usuario con Flet. Gestiona los eventos, la disposición de los controles y la interacción con el usuario.
--   `voxflow_core.py`: El cerebro del proyecto. La clase `Synthesizer` inicializa Coqui TTS, gestiona la carga de modelos, la síntesis de voz y el guardado de archivos.
--   `requirements.txt`: Lista todas las dependencias de Python.
--   `CHANGELOG.md`: Historial de cambios y versiones del proyecto.
-
----
-
-## 📦 Creación de Ejecutables
-
-Puedes distribuir esta aplicación como un ejecutable independiente usando el comando `build` de Flet.
-
--   **Para Windows:** `flet build windows`
--   **Para macOS:** `flet build macos`
--   **Para Linux:** `flet build linux`
-
-> **⚠️ Nota Importante sobre los Modelos de IA:**
-> La compilación con Flet empaquetará todas las dependencias de Python. Sin embargo, **el modelo de Coqui TTS no se incluye en el ejecutable**. La primera vez que un usuario final ejecute la aplicación, esta necesitará una conexión a internet para descargar y cachear el modelo de voz. Después de esa primera ejecución, la aplicación podrá funcionar sin conexión.
+-   `main.py`: Contiene todo el código de la interfaz de usuario con **CustomTkinter**. Gestiona los eventos, la disposición de los widgets y la interacción con el usuario de forma segura entre hilos.
+-   `voxflow_core.py`: El cerebro del proyecto. La clase `Synthesizer` inicializa Coqui TTS, gestiona la carga de modelos, la clonación de voz a partir de archivos de referencia y el guardado de audio.
+-   `requirements.txt`: Lista todas las dependencias de Python compatibles con Python 3.10.
+-   `assets/voices/`: Carpeta que contiene los archivos `.wav` de referencia para la clonación de voz.
+-   `.github/workflows/tests.yml`: Define el flujo de trabajo de Integración Continua (CI) en GitHub Actions, configurado para usar Python 3.10.
 
 ---
 
