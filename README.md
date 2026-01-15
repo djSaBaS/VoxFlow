@@ -28,23 +28,45 @@
 
 ## 🛠️ Instalación y Configuración
 
-1.  **Clonar el repositorio:**
-    ```bash
-    git clone https://github.com/tu-usuario/VoxFlow.git
-    cd VoxFlow
-    ```
+### 1. Clonar el Repositorio
+```bash
+git clone https://github.com/tu-usuario/VoxFlow.git
+cd VoxFlow
+```
 
-2.  **Configurar el Entorno Virtual (Recomendado):**
+### 2. Configurar un Entorno Virtual con Python 3.10
+
+Este paso es crucial. Para evitar conflictos con otras versiones de Python que puedas tener en tu sistema, te recomendamos encarecidamente crear un entorno virtual que utilice específicamente Python 3.10.
+
+**Si ya tienes Python 3.10 instalado:**
+
+*   **En macOS / Linux:**
     ```bash
+    # Crea el entorno virtual llamado '.venv' usando el ejecutable de python3.10
     python3.10 -m venv .venv
-    source .venv/bin/activate  # En Windows: .venv\Scripts\activate
+
+    # Activa el entorno
+    source .venv/bin/activate
     ```
 
-3.  **Instalar las dependencias:**
-    ```bash
-    pip install -r requirements.txt
+*   **En Windows (PowerShell):**
+    ```powershell
+    # Asumiendo que 'py -3.10' apunta a tu instalación de Python 3.10
+    py -3.10 -m venv .venv
+
+    # Activa el entorno
+    .venv\Scripts\Activate.ps1
     ```
-    *Nota: La primera vez que instales `TTS`, se descargarán varias dependencias, incluyendo PyTorch, lo cual puede tardar unos minutos.*
+    *Si usas el Símbolo del sistema (CMD), el comando de activación es `.venv\Scripts\activate.bat`.*
+
+Una vez activado, verás `(.venv)` al principio de la línea de tu terminal. Esto confirma que cualquier paquete de Python que instales quedará aislado en este proyecto.
+
+### 3. Instalar las Dependencias
+Con el entorno virtual activado, instala todos los paquetes necesarios con un solo comando:
+```bash
+pip install -r requirements.txt
+```
+*Nota: La primera vez que instales `TTS`, se descargarán varias dependencias, incluyendo PyTorch, lo cual puede tardar unos minutos.*
 
 ---
 
