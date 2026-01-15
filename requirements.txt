@@ -1,8 +1,20 @@
+# UI
 customtkinter==5.2.2
-TTS==0.22.0
+
+# Core math
 numpy==1.22.0
-scipy>=1.11.2
+scipy==1.11.4
+
+# TTS
+TTS==0.22.0
+
+# Audio
 sounddevice==0.4.6
+cffi>=1.15
+
+# Plotting
 matplotlib==3.7.5
+
+# Utils
 Pillow==10.3.0
 pytest==8.2.2
