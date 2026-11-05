@@ -35,7 +35,7 @@ Poner en marcha la aplicación ahora es más fácil que nunca.
 
 1.  **Clonar el repositorio:**
     ```bash
-    git clone https://github.com/tu-usuario/VoxFlow.git
+    git clone https://github.com/djSaBaS/VoxFlow.git
     cd VoxFlow
     ```
 
